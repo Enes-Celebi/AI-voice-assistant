@@ -21,17 +21,24 @@ class _HomePageState extends State<HomePage> {
     initSpeechToText();
   }
 
-  Future<void>initSpeechToText() async {
-    await speechToText.initialize();
+  Future<void> initSpeechToText() async {
+    bool available = await speechToText.initialize();
+    if (available) {
+      print('Speech recognition initialized');
+    } else {
+      print('Error initializing speech recognition');
+    }
     setState(() {});
   }
 
   Future<void> startListening() async {
+    print('Started listening...');
     await speechToText.listen(onResult: onSpeechResult);
     setState(() {});
   }
 
   Future<void> stopListening() async {
+    print('Stopped listening...');
     await speechToText.stop();
     setState(() {});
   }
@@ -40,12 +47,15 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       lastWords = result.recognizedWords;
     });
+    // Print the recognized words to the terminal
+    print('Recognized words: $lastWords');
   }
 
   @override
   void dispose() {
     super.dispose();
     speechToText.stop();
+    print('Disposed speech recognition');
   }
 
   @override
@@ -93,7 +103,6 @@ class _HomePageState extends State<HomePage> {
               margin: const EdgeInsets.symmetric(horizontal: 40).copyWith(
                 top: 30,
               ),
-              // margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
               decoration: BoxDecoration(
                 border: Border.all(
                   color: Pallete.borderColor,
@@ -171,4 +180,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
